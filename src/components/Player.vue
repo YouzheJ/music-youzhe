@@ -34,8 +34,16 @@
       ctx.fillRect(0, 0, width, height)
       const drawCurve = () => {
         console.log('draw')
+        ctx.beginPath()
+        ctx.moveTo(0, 300)
+        ctx.bezierCurveTo(300, 300, width - 300, height - 100, width, height - 200)
+        ctx.strokeStyle = '#06e9a3'
+        ctx.stroke()
       }
-      drawCurve()
+      setInterval(() => {
+        ctx.clearRect(0, 0, width, height)
+        drawCurve()
+      }, 40)
     }
   }
   /*
