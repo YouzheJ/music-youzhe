@@ -32,18 +32,32 @@
       const ctx = canvas.getContext('2d')
       ctx.fillStyle = '#f3f3f3'
       ctx.fillRect(0, 0, width, height)
-      const drawCurve = () => {
+      const LENGTH = 100
+      const step = width / LENGTH
+      const SPEED = 0.05
+      let xOffset = 0
+      const T = width * 4 / 3
+      const drawCurve = (step, len, xOffset) => {
         console.log('draw')
         ctx.beginPath()
-        ctx.moveTo(0, 300)
-        ctx.bezierCurveTo(300, 300, width - 300, height - 100, width, height - 200)
+        let x = 0
+        let y = Math.sin(x / T * 2 * Math.PI + xOffset) + 200
+        ctx.moveTo(x, y)
+        for (let i = 0; i < len; i++) {
+          x += step
+          y = -50 * Math.sin(x / T * 2 * Math.PI + xOffset) + 200
+          ctx.lineTo(x, y)
+        }
+        // ctx.moveTo(0, 300)
+        // ctx.bezierCurveTo(300, 300, width - 300, height - 100, width, height - 200)
         ctx.strokeStyle = '#06e9a3'
         ctx.stroke()
       }
       setInterval(() => {
         ctx.clearRect(0, 0, width, height)
-        drawCurve()
-      }, 40)
+        drawCurve(step, LENGTH, xOffset)
+        xOffset += SPEED
+      }, 16)
     }
   }
   /*
