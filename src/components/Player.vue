@@ -37,24 +37,30 @@
       const SPEED = 0.05
       let xOffset = 0
       const T = width * 4 / 3
+      const canVirtual = document.createElement('canvas')
+      canVirtual.width = width
+      canVirtual.height = height
+      const ctxVir = canVirtual.getContext('2d')
       const drawCurve = (step, len, xOffset) => {
-        console.log('draw')
-        ctx.beginPath()
+        // console.log('draw')
+        ctxVir.beginPath()
         let x = 0
-        let y = Math.sin(x / T * 2 * Math.PI + xOffset) + 200
-        ctx.moveTo(x, y)
+        let y = 50 * Math.sin(x / T * 2 * Math.PI + xOffset) + 200
+        ctxVir.moveTo(x, y)
         for (let i = 0; i < len; i++) {
           x += step
-          y = -50 * Math.sin(x / T * 2 * Math.PI + xOffset) + 200
-          ctx.lineTo(x, y)
+          y = 50 * Math.sin(x / T * 2 * Math.PI + xOffset) + 200
+          ctxVir.lineTo(x, y)
         }
-        // ctx.moveTo(0, 300)
-        // ctx.bezierCurveTo(300, 300, width - 300, height - 100, width, height - 200)
-        ctx.strokeStyle = '#06e9a3'
-        ctx.stroke()
+        // ctxVir.moveTo(0, 300)
+        // ctxVir.bezierCurveTo(300, 300, width - 300, height - 100, width, height - 200)
+        ctxVir.strokeStyle = '#06e9a3'
+        ctxVir.stroke()
+        ctx.drawImage(canVirtual, 0, 0)
       }
       setInterval(() => {
         ctx.clearRect(0, 0, width, height)
+        ctxVir.clearRect(0, 0, width, height)
         drawCurve(step, LENGTH, xOffset)
         xOffset += SPEED
       }, 16)
