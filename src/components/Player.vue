@@ -23,47 +23,100 @@
       }
     },
     mounted () {
-      const canvas = document.getElementById('canvas')
-      const content = canvas.parentNode
-      const width = content.offsetWidth
-      const height = content.offsetHeight
-      canvas.width = width
-      canvas.height = height
-      const ctx = canvas.getContext('2d')
-      ctx.fillStyle = '#f3f3f3'
-      ctx.fillRect(0, 0, width, height)
-      const LENGTH = 100
-      const step = width / LENGTH
-      const SPEED = 0.05
-      let xOffset = 0
-      const T = width * 4 / 3
-      const canVirtual = document.createElement('canvas')
-      canVirtual.width = width
-      canVirtual.height = height
-      const ctxVir = canVirtual.getContext('2d')
-      const drawCurve = (step, len, xOffset) => {
-        // console.log('draw')
-        ctxVir.beginPath()
-        let x = 0
-        let y = 50 * Math.sin(x / T * 2 * Math.PI + xOffset) + 200
-        ctxVir.moveTo(x, y)
-        for (let i = 0; i < len; i++) {
-          x += step
-          y = 50 * Math.sin(x / T * 2 * Math.PI + xOffset) + 200
-          ctxVir.lineTo(x, y)
-        }
-        // ctxVir.moveTo(0, 300)
-        // ctxVir.bezierCurveTo(300, 300, width - 300, height - 100, width, height - 200)
-        ctxVir.strokeStyle = '#06e9a3'
-        ctxVir.stroke()
-        ctx.drawImage(canVirtual, 0, 0)
+      const initCanvas = () => {
+        const canvas = document.getElementById('canvas')
+        const content = canvas.parentNode
+        const width = content.offsetWidth // 背景画布的宽度
+        const height = content.offsetHeight // 背景画布的高度
+        const LENGTH = 100 // 横坐标的取点数
+        const step = width / LENGTH // 两点之间的间隔
+        const SPEED = 0.05 // 移动速度
+        let xOffset = 0
+        // const T = width * 4 / 3 // 周期
+        const w = 1 / (width * 4 / 3) * 2 * Math.PI
+        canvas.width = width
+        canvas.height = height
+        const ctx = canvas.getContext('2d')
+        ctx.fillStyle = '#f3f3f3' // 背景的颜色
+        ctx.fillRect(0, 0, width, height) // 初始化背景
+        const curve1 = new Curve(ctx, width - 50, height, 120, w / 2, 300)
+        const curve2 = new Curve(ctx, width - 200, height, 30, w, 300)
+        const curve3 = new Curve(ctx, width - 120, height, 50, w / 3, 300)
+        const curve4 = new Curve(ctx, width - 140, height, 50, w * 0.8, 320)
+        const curve5 = new Curve(ctx, width - 130, height, 50, w * 1.2, 290)
+        setInterval(() => { // 开始绘制
+          drawCanvas(ctx, [curve1, curve2, curve3, curve4, curve5], width, height, step, LENGTH, xOffset)
+          xOffset += SPEED
+        }, 16)
       }
-      setInterval(() => {
+      const drawCanvas = (ctx, curves, width, height, step, LENGTH, xOffset) => { // 绘制内容
         ctx.clearRect(0, 0, width, height)
-        ctxVir.clearRect(0, 0, width, height)
-        drawCurve(step, LENGTH, xOffset)
-        xOffset += SPEED
-      }, 16)
+        curves.map((curve, i) => {
+          curve.drawCurve(step, LENGTH, xOffset)
+        })
+      }
+      class Curve {
+        constructor (ctx, width, height, h, w, b) {
+          this.ctx = ctx // 背景canvas
+          this.width = width // 横标的总长
+          this.height = height // 纵坐标的总长
+          this.h = h // 决定曲线高度
+          this.w = w // 决定波长
+          this.b = b // 上下偏移量
+          this.canVirtual = document.createElement('canvas')
+          this.canVirtual.width = width
+          this.canVirtual.height = height
+          this.ctxVir = this.canVirtual.getContext('2d')
+        }
+        drawCurve = (step, len, xOffset) => {
+          // console.log('draw')
+          this.ctxVir.clearRect(0, 0, this.width, this.height)
+          this.ctxVir.beginPath()
+          let x = 0
+          // let y = 50 * Math.sin(x / T * 2 * Math.PI + xOffset) + 200
+          let y = this.sin(x, xOffset)
+          this.ctxVir.moveTo(x, y)
+          for (let i = 0; i < len; i++) {
+            x += step
+            // y = 50 * Math.sin(x / T * 2 * Math.PI + xOffset) + 200
+            y = this.sin(x, xOffset)
+            this.ctxVir.lineTo(x, y)
+          }
+          this.ctxVir.strokeStyle = '#06e9a3'
+          this.ctxVir.stroke()
+          this.ctx.drawImage(this.canVirtual, 0, 0)
+        }
+        sin (x, f) {
+          return this.h * Math.sin(x * this.w + f) + this.b
+        }
+      }
+      initCanvas()
+      // const LENGTH = 100
+      // const step = width / LENGTH
+      // const SPEED = 0.05
+      // let xOffset = 0
+      // const T = width * 4 / 3
+      // const canVirtual = document.createElement('canvas')
+      // canVirtual.width = width
+      // canVirtual.height = height
+      // const ctxVir = canVirtual.getContext('2d')
+      // const drawCurve = (step, len, xOffset) => {
+      //   // console.log('draw')
+      //   ctxVir.beginPath()
+      //   let x = 0
+      //   let y = 50 * Math.sin(x / T * 2 * Math.PI + xOffset) + 200
+      //   ctxVir.moveTo(x, y)
+      //   for (let i = 0; i < len; i++) {
+      //     x += step
+      //     y = 50 * Math.sin(x / T * 2 * Math.PI + xOffset) + 200
+      //     ctxVir.lineTo(x, y)
+      //   }
+      //   // ctxVir.moveTo(0, 300)
+      //   // ctxVir.bezierCurveTo(300, 300, width - 300, height - 100, width, height - 200)
+      //   ctxVir.strokeStyle = '#06e9a3'
+      //   ctxVir.stroke()
+      //   ctx.drawImage(canVirtual, 0, 0)
+      // }
     }
   }
   /*
