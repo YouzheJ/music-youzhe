@@ -44,8 +44,8 @@
         const curve3 = new Curve(ctx, width * 0.80, height, 2, height / 5, w * 1.05, height * 0.43)
         const curve4 = new Curve(ctx, width * 0.95, height, 3, height / 18, w * 0.8, height * 0.46)
         const curve5 = new Curve(ctx, width * 0.93, height, 4, height / 13, w * 1.2, height * 0.41)
-        const curve6 = new Curve(ctx, width * 0.98, height, 5, height / 20, w * 1.6, height * 0.46, 1)
-        const curve7 = new Curve(ctx, width / 2, height, 3, 100, w * 2.2, 280, 1)
+        const curve6 = new Curve(ctx, width * 0.98, height, 5, height / 20, w * 1.6, height * 0.46, 0.3)
+        const curve7 = new Curve(ctx, width / 2, height, 3, 100, w * 2.2, 280, 0.3)
         setInterval(() => { // 开始绘制
           drawCanvas(ctx, [curve1, curve2, curve3, curve4, curve5, curve6, curve7], width, height, step, LENGTH, xOffset)
           xOffset += SPEED
@@ -68,7 +68,7 @@
         return `rgb(${r(c(x) * 127 + 128)}, ${r(c(x + t / 3) * 127 + 128)}, ${r(c(x + t / 3 * 2) * 127 + 128)})`
       }
       class Curve {
-        constructor (ctx, width, height, color, h, w, b, lineWidth = 2) {
+        constructor (ctx, width, height, color, h, w, b, lineWidth = 0.6) {
           this.ctx = ctx // 背景canvas
           this.width = width // 横标的总长
           this.height = height // 纵坐标的总长
