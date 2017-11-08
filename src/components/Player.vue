@@ -4,6 +4,7 @@
       <h3>MUSIC YOUZHE</h3>
     </header>
     <section>
+      <MusicList />
       <div class="content">
         <canvas id="canvas"/>
       </div>
@@ -15,6 +16,8 @@
 </template>
 
 <script>
+  import MusicList from './music-list.vue'
+
   export default {
     name: 'player',
     data () {
@@ -22,13 +25,16 @@
         msg: ''
       }
     },
+    components: {
+      MusicList
+    },
     mounted () {
       const initCanvas = () => {
         const canvas = document.getElementById('canvas')
         const content = canvas.parentNode
         const width = content.offsetWidth // 背景画布的宽度
         const height = content.offsetHeight // 背景画布的高度
-        const LENGTH = 100 // 横坐标的取点数
+        const LENGTH = 50 // 横坐标的取点数
         const step = width / LENGTH // 两点之间的间隔
         const SPEED = 0.025 // 移动速度
         let xOffset = 0
@@ -49,7 +55,7 @@
         setInterval(() => { // 开始绘制
           drawCanvas(ctx, [curve1, curve2, curve3, curve4, curve5, curve6, curve7], width, height, step, LENGTH, xOffset)
           xOffset += SPEED
-        }, 16)
+        }, 26)
       }
       const drawCanvas = (ctx, curves, width, height, step, LENGTH, xOffset) => { // 绘制内容
         ctx.fillRect(0, 0, width, height) // 绘制背景
@@ -112,7 +118,7 @@
           return this.h * Math.sin(x * this.w + f) + this.b
         }
       }
-      initCanvas()
+      // initCanvas() // 需要优化一下性能
       window.onresize = () => {
         // initCanvas()
       }
